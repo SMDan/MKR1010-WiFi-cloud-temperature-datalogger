@@ -9,7 +9,7 @@ Next, in the Arduino IDE go to files->Examples->WiFiNINA->Tools->FirmwareUpdater
 Next ensure the latest firmaware is installed by going to Tools-> Wifi101 /WiFiNINA Firmware Updater. Select the latest firmware and Upload the Sketch to the board
 To finish setting up, compile and upload the sketch SerialNINAPassthrough. You can find this sketch by going to File -> Examples -> WiFiNINA -> Tools -> SerialNINAPassthrough 
 
-My simple datalogger uses a TMP 36GZ temperature sensor, the left pin (from th flat face) connected to positive, the center pin connected to A5 on the MKR1010 board and the right pin to ground.
+My simple datalogger uses a TMP 36GZ temperature sensor, the left pin (from th flat face) connected to VCC (not 5V positive), the center pin connected to A5 on the MKR1010 board and the right pin to ground.
 An LED is also added that can be turned on/off via the cloud just for testing things work ok but could be a useful function on its own if required. The short leg of the LED is connected to ground via a 220Ohm resistor and the long leg connected to digital pin 5 on the MKR1010 board. 
 Now create a cloud account at https://create.arduino.cc/iot
 You'll need to create a 'thing' which is your MKR1010 device.
@@ -30,7 +30,7 @@ void loop() {
   // Your code here 
   delay(2000);
   
-  temp=(((analogRead(sensorpin)*0.00322581)-0.5)*100);
+  temp=(((analogRead(sensorpin)*0.00322)-0.5)*100);
 }
 
 and the void on LED change to:
@@ -46,6 +46,8 @@ void onLedChange()  {
 }
 
 Then verify and upload to the board.
+Connect a LiPo 3.7V battery to theboard and disconnect the USD. Inaccurate temperature readings will be given unless a steady 3.7V is supplied.
+The voltage output from the temperature sensor will be between 0V and 3.3V. The sensorpin value will be between 0 and 1023 representaing a voltage on the sensorpin and the volatge is between 0V and 3.3V and so the sensorvalue multiplied by 3.3*1024 (0.00322) gives the voltage. The manufacturer converts this voltage to temperature in degrees C by minusing 0.5 and then multiply by 100.
 
 To set up your IOT dashboard go to dashboard then click the edit button to add wigets. This can be however you prefer but I added a switch, link variable- thing- LED
 I also added a Value button, linked with temp and finally added a chart and linked to the temp variable.
